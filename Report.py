@@ -35,6 +35,8 @@ def rounding_to_str(num, interval=0.02) -> str:
     """num按照interval修约并返回修约值的字符串"""
     if type(num) != int or float:
         return '/'
+    if type(interval) != int or float:
+        interval = 0.02
     temp = num / interval
     tp = modf(abs(temp))
     n = len(str(interval)) - 2
@@ -61,6 +63,8 @@ class Report:
         self.serial = dic['序号']
         self.error = {}
         self.r_number = 0
+        self.interval_1 = 0.02
+        self.interval_2 = 1
 
     @staticmethod
     def xlsx_to_dictlist(xlsx_name):
@@ -87,11 +91,18 @@ class Report:
         wb = openpyxl.load_workbook(self.xlsx_name, data_only=True, read_only=True)
         sheet = wb.get_sheet_by_name(str(self.serial))
         dic = {}
+        if type(sheet['A2']) is int or float:
+            self.interval_1 = sheet['A2']
+        if type(sheet['A4']) is int or float:
+            self.interval_2 = sheet['A4']
+
         x = int(sheet.max_row / 8)
         for num in range(x):
             for col in 'DEFGH':
-                for row in range(num * 8 + 5, num * 8 + 9):
-                    dic[f"{col}{row}"] = rounding_to_str(sheet[col + f'{row}'], sheet['A2'])
+                for row in range(num * 8 + 5, num * 8 + 8, 2):
+                    dic[f"{col}{row}"] = rounding_to_str(sheet[col + f'{row}'], self.interval_1)
+                for row in range(num * 8 + 6, num * 8 + 9, 2):
+                    dic[f"{col}{row}"] = rounding_to_str(sheet[col + f'{row}'], self.interval_2)
             for col in 'BJK':
                 dic[f"{col}{num * 8 + 5}"] = sheet[f'{col}{num * 8 + 5}']
             dic[f"I{num * 8 + 5}"] = sheet[f'I{num * 8 + 5}']
