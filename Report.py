@@ -73,7 +73,6 @@ class Report:
         ws = wb.worksheets[0]
         header = []
         dictlist = []
-        x = 0
         for k in range(1, ws.max_column + 1):
             header.append(ws.cell(1, k).value)
 
@@ -82,7 +81,6 @@ class Report:
             for _j in range(1, ws.max_column + 1):
                 key = header[_j - 1]
                 _dic[key] = ws.cell(_i, _j).value
-                _dic['number'] = x
             dictlist.append(_dic)
         return dictlist
 
@@ -97,6 +95,7 @@ class Report:
             self.interval_2 = sheet['A4']
 
         x = int(sheet.max_row / 8)
+        self.r_number = int(x / 3)
         for num in range(x):
             for col in 'DEFGH':
                 for row in range(num * 8 + 5, num * 8 + 8, 2):
@@ -107,7 +106,6 @@ class Report:
                 dic[f"{col}{num * 8 + 5}"] = sheet[f'{col}{num * 8 + 5}']
             dic[f"I{num * 8 + 5}"] = sheet[f'I{num * 8 + 5}']
             dic[f"I{num * 8 + 7}"] = sheet[f'I{num * 8 + 7}']
-        dic["number"] = x
         self.dic.update(dic)
 
     def value_to_str(self):
