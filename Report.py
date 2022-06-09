@@ -33,13 +33,12 @@ def pop_up(error_dict: dict, results_path, icon):
 
 def rounding_to_str(num, interval=0.02) -> str:
     """num按照interval修约并返回修约值的字符串"""
-    if type(num) != int or float:
+    if type(num) not in (int, float):
         return '/'
-    if type(interval) != int or float:
+    if type(interval) not in (int, float):
         interval = 0.02
     temp = num / interval
     tp = modf(abs(temp))
-    n = len(str(interval)) - 2
     if isclose(tp[0], 0.5, rel_tol=0.001):
         if tp[1] % 2 != 0:
             k = tp[1] + 1
@@ -48,9 +47,15 @@ def rounding_to_str(num, interval=0.02) -> str:
     else:
         k = round(temp)
     if temp < 0:
-        return f'{-k * interval:+.{n}f}'
+        result = -k * interval
     else:
-        return f'{k * interval:+.{n}f}'
+        result = k * interval
+    if type(interval) == float:
+        n = len(str(interval)) - 2
+        return f'{result:+.{n}f}'
+    else:
+        n = len(str(interval))
+        return f'{result:+{n}d}'
 
 
 class Report:
@@ -89,23 +94,23 @@ class Report:
         wb = openpyxl.load_workbook(self.xlsx_name, data_only=True, read_only=True)
         sheet = wb.get_sheet_by_name(str(self.serial))
         dic = {}
-        if type(sheet['A2']) is int or float:
-            self.interval_1 = sheet['A2']
-        if type(sheet['A4']) is int or float:
-            self.interval_2 = sheet['A4']
+        if type(sheet['A2'].value) is int or float:
+            self.interval_1 = sheet['A2'].value
+        if type(sheet['A4'].value) is int or float:
+            self.interval_2 = sheet['A4'].value
 
         x = int(sheet.max_row / 8)
         self.r_number = int(x / 3)
         for num in range(x):
             for col in 'DEFGH':
                 for row in range(num * 8 + 5, num * 8 + 8, 2):
-                    dic[f"{col}{row}"] = rounding_to_str(sheet[col + f'{row}'], self.interval_1)
+                    dic[f"{col}{row}"] = rounding_to_str(sheet[col + f'{row}'].value, self.interval_1)
                 for row in range(num * 8 + 6, num * 8 + 9, 2):
-                    dic[f"{col}{row}"] = rounding_to_str(sheet[col + f'{row}'], self.interval_2)
+                    dic[f"{col}{row}"] = rounding_to_str(sheet[col + f'{row}'].value, self.interval_2)
             for col in 'BJK':
-                dic[f"{col}{num * 8 + 5}"] = sheet[f'{col}{num * 8 + 5}']
-            dic[f"I{num * 8 + 5}"] = sheet[f'I{num * 8 + 5}']
-            dic[f"I{num * 8 + 7}"] = sheet[f'I{num * 8 + 7}']
+                dic[f"{col}{num * 8 + 5}"] = sheet[f'{col}{num * 8 + 5}'].value
+            dic[f"I{num * 8 + 5}"] = sheet[f'I{num * 8 + 5}'].value
+            dic[f"I{num * 8 + 7}"] = sheet[f'I{num * 8 + 7}'].value
         self.dic.update(dic)
 
     def value_to_str(self):

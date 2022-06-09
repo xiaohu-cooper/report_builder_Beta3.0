@@ -20,7 +20,7 @@ def main(xlsx_name: str, docx_name: str, results_path: str, model: str) -> dict:
             error_dict.update(meter.error)
     if model == 'CT':
         docx_names_list = docx_name.split(';')   # 6种电流模板分别是0~5
-        docx_names_list.sort()
+        docx_names_list.sort()    # 和上一行必须分写两行
         for dic in dictlist:
             ct = CTReport(xlsx_name, docx_names_list[0], results_path, dic)
             ct.xlsx_value_to_dic()
