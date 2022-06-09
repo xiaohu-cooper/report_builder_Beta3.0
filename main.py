@@ -10,6 +10,7 @@ def main(xlsx_name: str, docx_name: str, results_path: str, model: str) -> dict:
 
     error_dict = {}
     dictlist = Report.xlsx_to_dictlist(xlsx_name)
+    docx_names_list = []
     if model == '电能表':
         for dic in dictlist:
             meter = MeterReport(xlsx_name, docx_name, results_path, dic)
@@ -18,7 +19,8 @@ def main(xlsx_name: str, docx_name: str, results_path: str, model: str) -> dict:
             meter.render_to_save()
             error_dict.update(meter.error)
     if model == 'CT':
-        docx_names_list = docx_name.split(';').sort()    # 6种电流模板分别是0~5
+        docx_names_list = docx_name.split(';')   # 6种电流模板分别是0~5
+        docx_names_list.sort()
         for dic in dictlist:
             ct = CTReport(xlsx_name, docx_names_list[0], results_path, dic)
             ct.xlsx_value_to_dic()

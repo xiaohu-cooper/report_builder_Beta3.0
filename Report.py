@@ -28,7 +28,7 @@ def pop_up(error_dict: dict, results_path, icon):
                  f'{repr(vs)}', icon=icon)
     else:
         sg.Popup(fr'报告已生成在{results_path}', icon=icon)
-    os.startfile(results_path)
+    # os.startfile(results_path)
 
 
 def rounding_to_str(num, interval=0.02) -> str:

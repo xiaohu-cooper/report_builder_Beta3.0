@@ -10,10 +10,11 @@ import PySimpleGUI as sg
 from Report import pop_up
 from main import main
 
+# 修改初始路径
 default_meter_xlsx = 'resources/项目信息（煤矸石）.xlsx'
 default_meter_docx = 'resources/电能表检验报告（邮件模板）.docx'
-default_CT_xlsx = '.....'
-default_CT_docxs = '..;.;..'
+default_CT_xlsx = '/Users/xiaohu/PycharmProjects/report_builder_Beta3.0/resources/电流/项目电流信息（XX项目）.xlsx'
+default_CT_docxs = '/Users/xiaohu/PycharmProjects/report_builder_Beta3.0/resources/电流/1_电流模板.docx;/Users/xiaohu/PycharmProjects/report_builder_Beta3.0/resources/电流/2_电流模板.docx;/Users/xiaohu/PycharmProjects/report_builder_Beta3.0/resources/电流/3_电流模板.docx;/Users/xiaohu/PycharmProjects/report_builder_Beta3.0/resources/电流/4_电流模板.docx;/Users/xiaohu/PycharmProjects/report_builder_Beta3.0/resources/电流/5_电流模板.docx;/Users/xiaohu/PycharmProjects/report_builder_Beta3.0/resources/电流/6_电流模板.docx'
 default_PT_xlsx = '......'
 default_PT_docx = '........'
 default_results_path = 'results'
