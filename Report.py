@@ -114,7 +114,10 @@ class Report:
         self.dic.update(dic)
 
     def value_to_str(self):
-        pass
+        """ 将数据格式化字典中有None的全部转化为'/' """
+        for key, value in self.dic.items():
+            if value is None:
+                self.dic[key] = r'/'
 
     def image_deal_to_dic(self):
         """如果有照片路径处理成InlineImage对象，并更新到dic"""
