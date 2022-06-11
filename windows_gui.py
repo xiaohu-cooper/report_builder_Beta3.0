@@ -83,7 +83,6 @@ button_color = window1['-DOCX_FB-'].ButtonColor
 
 while True:
     event, value = window1.read()
-    print(event)
     if event is None or event == '取消':
         break
 
@@ -104,7 +103,6 @@ while True:
         window1['-DOCX_FB-'].update(button_color=button_color, disabled=False)
 
     if event == '确认生成':
-        t1 = time.time()
         xlsx_name = value['-XLSX-']
         docx_name = value['-DOCX-']
         results_path = value['-PATH-']
@@ -122,32 +120,39 @@ while True:
 
         window2 = make_window2()
         bar = window2['-BAR-']
-        window1.hide()
+        # window2.make_modal()    # 关闭前不能与其他窗口交互
+        # window1.disable()
+        window1['确认生成'].update(button_color='LightGray', disabled=True)    # window1禁止用户输入，确认生成按钮变为灰色
 
         thread1 = threading.Thread(target=main, args=[xlsx_name, docx_name, results_path, model, error_dict])
         thread1.setDaemon(True)
         thread1.start()
 
+        # 创建主线程循环，直到子线程结束
         while threading.active_count() >= 2:
+            # 进度条窗口的循环
             while not window2.is_closed():
                 event_1, value_1 = window2.read(100)
-                print(event_1, time.time(), threading.active_count())
-                if event_1 is None or event_1 == '关闭':
+                if event_1 is None:
                     break
+                if event_1 == '关闭':
+                    window2.minimize()
                 try:
                     progress_value = q.get_nowait()
                 except queue.Empty:
                     continue
                 else:
-                    window2['-P-'].Update(value=f'完成进度{progress_value}%')
-                    bar.update(progress_value)
+                    window2['-P-'].Update(value=f'完成进度{progress_value}%')    # 更新进度条显示文字
+                    bar.update(progress_value)   # 更新进度条
                     window2.refresh()
                     if progress_value >= 100:
                         break
-            window2.close()
+            if not window2.is_closed():
+                window2.close()
 
-        window1.un_hide()
+        window1.ding()   # 完成后，弹窗前响铃
         pop_up(error_dict, results_path, icon)
-        t2 = time.time()
-        print(str(t2 - t1))
+        # window1.enable()
+        window1['确认生成'].update(button_color=button_color, disabled=False)
+
 window1.close()
