@@ -1,7 +1,4 @@
-# 这是一个示例 Python 脚本。
 
-# 按 ⌃R 执行或将其替换为您的代码。
-# 按 双击 ⇧ 在所有地方搜索类、文件、工具窗口、操作和设置。
 import queue
 import time
 
@@ -17,13 +14,11 @@ def mark(walk):
     q.put(start_pro)
 
 
-
 def main(xlsx_name: str, docx_name: str, results_path: str, model: str, error_dict: dict):
     global start_pro
 
     q.put(start_pro)
     time.sleep(0.1)
-
     dictlist = Report.xlsx_to_dictlist(xlsx_name)
     walk_1 = (100 - start_pro) // (2 * len(dictlist))
     if model == 'METER':
@@ -50,8 +45,6 @@ def main(xlsx_name: str, docx_name: str, results_path: str, model: str, error_di
             mark(walk_1)
     if model == 'PT':
         for dic in dictlist:
-            if not flag:
-                break
             pt = PTReport(xlsx_name, docx_name, results_path, dic)
             mark(walk_1)
             pt.xlsx_value_to_dic()
