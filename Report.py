@@ -12,6 +12,8 @@ import openpyxl
 import PySimpleGUI as sg
 from docx.shared import Mm
 from docxtpl import InlineImage, DocxTemplate
+from matplotlib import mathtext
+import matplotlib.font_manager as mfm
 
 
 def pop_up(error_dict: dict, results_path, icon):
@@ -29,6 +31,16 @@ def pop_up(error_dict: dict, results_path, icon):
     else:
         sg.Popup(fr'报告已生成在{results_path}', icon=icon)
     # os.startfile(results_path)
+
+
+def vol_to_filename(voltage, filename="resources/voltage_image.png"):
+    """把电压值处理成图片"""
+    n = str(voltage)
+    pop = mfm.FontProperties(family='Times New Roman', size=32, weight='roman', math_fontfamily='stix')
+    mathtext.math_to_image(r'$\frac{' + n + '/\sqrt{3}\mathrm{kV}}{100/\sqrt{3}\mathrm{V}} $', filename,
+                           prop=pop,
+                           dpi=300)
+    return filename
 
 
 def rounding_to_str(num, interval=0.02) -> str:
@@ -176,3 +188,28 @@ class PTReport(Report):
 
     def __init__(self, xlsx_name, docx_name, results_path, dic):
         super().__init__(xlsx_name, docx_name, results_path, dic)
+
+    def xlsx_value_to_dic(self):
+        """将其他页（sheet）的数据写入"""
+        temp_1 = vol_to_filename(self.dic['电压'])    # 将电压值转化为公式图片并存在默认路径
+        self.dic['变比'] = InlineImage(self.docx, temp_1, width=Mm(20))   # 将公式图片InlineImage对象赋值到电压key上
+        wb = openpyxl.load_workbook(self.xlsx_name, data_only=True, read_only=True)
+        sheet = wb.get_sheet_by_name(str(self.serial))
+        dic = {}
+        if type(sheet['A2'].value) in (int, float):
+            self.interval_1 = sheet['A2'].value
+        if type(sheet['A4'].value) in (int, float):
+            self.interval_2 = sheet['A4'].value
+
+        x = int(sheet.max_row / 8)
+        self.r_number = int(x / 3)
+        for num in range(x):
+            for col in 'DEFG':
+                for row in range(num * 8 + 5, num * 8 + 8, 2):
+                    dic[f"{col}{row}"] = rounding_to_str(sheet[col + f'{row}'].value, self.interval_1)
+                for row in range(num * 8 + 6, num * 8 + 9, 2):
+                    dic[f"{col}{row}"] = rounding_to_str(sheet[col + f'{row}'].value, self.interval_2)
+            for col in 'HIJ':
+                dic[f"{col}{num * 8 + 5}"] = sheet[f'{col}{num * 8 + 5}'].value
+                dic[f"{col}{num * 8 + 7}"] = sheet[f'{col}{num * 8 + 7}'].value
+        self.dic.update(dic)
