@@ -30,7 +30,7 @@ def pop_up(error_dict: dict, results_path, icon):
                  f'{repr(vs)}', icon=icon)
     else:
         sg.Popup(fr'报告已生成在{results_path}', icon=icon)
-    # os.startfile(results_path)
+    os.startfile(results_path)
 
 
 def vol_to_filename(voltage, filename="resources/voltage_image.png"):
