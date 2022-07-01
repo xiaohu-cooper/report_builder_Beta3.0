@@ -151,8 +151,8 @@ while True:
                     window2.refresh()
                     if progress_value >= 100:
                         break
-            if not window2.is_closed():
-                window2.close()
+            # if not window2.is_closed():
+        window2.close()
 
         window1.ding()   # 完成后，弹窗前响铃
         pop_up(error_dict, results_path, icon)

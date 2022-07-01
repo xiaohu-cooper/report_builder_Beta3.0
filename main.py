@@ -16,7 +16,7 @@ def mark(walk):
 
 def main(xlsx_name: str, docx_name: str, results_path: str, model: str, error_dict: dict):
     global start_pro
-
+    start_pro = 10
     q.put(start_pro)
     time.sleep(0.1)
     dictlist = Report.xlsx_to_dictlist(xlsx_name)

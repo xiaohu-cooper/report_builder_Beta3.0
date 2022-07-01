@@ -5,6 +5,7 @@ Author: xiaohu
 Date: 2022/6/8
 """
 import datetime
+import locale
 import os
 from math import modf, isclose
 
@@ -14,6 +15,8 @@ from docx.shared import Mm
 from docxtpl import InlineImage, DocxTemplate
 from matplotlib import mathtext
 import matplotlib.font_manager as mfm
+
+locale.setlocale(locale.LC_CTYPE, 'chinese')
 
 
 def pop_up(error_dict: dict, results_path, icon):
