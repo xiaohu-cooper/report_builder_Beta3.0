@@ -67,7 +67,7 @@ def make_window1():
         [sg.Text('')],
         [sg.Button('确认生成', size=(8, 1), font=('楷体', 11)), sg.Button('取消', size=(8, 1), font=('楷体', 11))],
     ]
-    return sg.Window("报告生成器", layout, font=10, finalize=True)
+    return sg.Window("报告生成器 V2.2", layout, font=10, finalize=True)
 
 
 # 创建副窗口函数
