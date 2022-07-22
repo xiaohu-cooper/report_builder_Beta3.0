@@ -60,7 +60,7 @@ def rounding_to_str(num, interval=0.02) -> str:
         else:
             k = tp[1]
     else:
-        k = round(temp)
+        k = round(abs(temp))
     if temp < 0:
         result = -k * interval
     else:
@@ -70,6 +70,7 @@ def rounding_to_str(num, interval=0.02) -> str:
         return f'{result:+.{n}f}'
     else:
         n = len(str(interval))
+        result = int(result)
         return f'{result:+{n}d}'
 
 
